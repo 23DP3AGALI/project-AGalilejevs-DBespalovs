@@ -8,18 +8,23 @@ import java.net.http.HttpResponse;
 
 public class RandomWordGenerator {
     private static final String API_URL = "https://random-word-api.vercel.app/api?words=1&length=5";
+    private static final HttpClient client = HttpClient.newHttpClient();
 
     public String getWord() throws IOException, InterruptedException {
-        return fetchRandomWord();
-    }
-
-    private String fetchRandomWord() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body().replace("[", "").replace("]", "").replace("\"", "");
+        
+        if (response.statusCode() != 200) {
+            throw new IOException("API request failed with status: " + response.statusCode());
+        }
+
+        return response.body()
+                .replace("[", "")
+                .replace("]", "")
+                .replace("\"", "")
+                .trim();
     }
 }
