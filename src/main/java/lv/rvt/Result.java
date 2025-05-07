@@ -36,15 +36,33 @@ public class Result {
     }
 
     public static List<String> getStatistics() {
+        return getFilteredStatistics(1, 6, null, null);
+    }
+
+    public static List<String> getFilteredStatistics(int minAttempts, int maxAttempts, 
+                                                   LocalDate fromDate, LocalDate toDate) {
         try {
             if (!Files.exists(Paths.get(FILE_NAME))) {
                 return Collections.emptyList();
             }
-            
+
             return Files.lines(Paths.get(FILE_NAME))
                     .skip(1)
-                    .filter(line -> line.split(",")[1].equals(Player.getNickname()))
-                    .limit(10)
+                    .filter(line -> {
+                        String[] parts = line.split(",");
+                        if (!parts[1].equals(Player.getNickname())) return false;
+                        
+                        int attempts = Integer.parseInt(parts[3]);
+                        LocalDateTime gameTime = LocalDateTime.parse(parts[0], FORMATTER);
+                        
+                        boolean attemptsMatch = attempts >= minAttempts && attempts <= maxAttempts;
+                        boolean dateMatch = (fromDate == null || gameTime.toLocalDate().isAfter(fromDate)) &&
+                                          (toDate == null || gameTime.toLocalDate().isBefore(toDate));
+                        
+                        return attemptsMatch && dateMatch;
+                    })
+                    .sorted(Comparator.comparingInt(line -> Integer.parseInt(line.split(",")[3])))
+                    .limit(20)
                     .collect(Collectors.toList());
         } catch (IOException e) {
             return Collections.emptyList();
@@ -55,26 +73,5 @@ public class Result {
         return (int) getStatistics().stream()
             .filter(line -> line.split(",")[2].equals("WIN"))
             .count();
-    }
-
-    public static void clearPlayerStatistics() {
-        try {
-            List<String> allLines = Files.exists(Paths.get(FILE_NAME)) 
-                ? Files.readAllLines(Paths.get(FILE_NAME)) 
-                : new ArrayList<>();
-                
-            if (!allLines.isEmpty()) {
-                List<String> filteredLines = allLines.stream()
-                    .filter(line -> {
-                        if (line.startsWith("Timestamp")) return true;
-                        return !line.split(",")[1].equals(Player.getNickname());
-                    })
-                    .collect(Collectors.toList());
-                
-                Files.write(Paths.get(FILE_NAME), filteredLines);
-            }
-        } catch (IOException e) {
-            System.err.println("Error clearing statistics: " + e.getMessage());
-        }
     }
 }

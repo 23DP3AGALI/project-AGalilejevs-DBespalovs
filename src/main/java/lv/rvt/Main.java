@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("=== Welcome to Wordle Game ===");
+            System.out.println("=== WELCOME TO WORDLE ===");
             
             while (!Player.isNicknameSet()) {
                 System.out.print("Enter your nickname: ");

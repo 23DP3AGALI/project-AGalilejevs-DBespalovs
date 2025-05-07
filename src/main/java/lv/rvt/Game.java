@@ -7,7 +7,7 @@ public class Game {
     private final Scanner scanner = new Scanner(System.in);
 
     public void start(String correctWord) {
-        System.out.println("\n=== New Game ===");
+        System.out.println("\n=== NEW GAME ===");
         System.out.println("Guess the 5-letter word. You have " + MAX_ATTEMPTS + " attempts.");
         
         for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
@@ -35,7 +35,7 @@ public class Game {
 
     private boolean processGuess(String correct, String guess, int attempt) {
         if (guess.equals(correct)) {
-            System.out.println("🟢🟢🟢🟢🟢 Congratulations! You won in " + attempt + " attempts!");
+            System.out.println("🟢🟢🟢🟢🟢 Correct! You won in " + attempt + " attempts!");
             Result.saveResult(true, attempt, correct, guess);
             return true;
         }
@@ -65,4 +65,4 @@ public class Game {
         System.out.println("\nGame over! The word was: " + correctWord);
         Result.saveResult(false, MAX_ATTEMPTS, correctWord, "-");
     }
-}   
+}
