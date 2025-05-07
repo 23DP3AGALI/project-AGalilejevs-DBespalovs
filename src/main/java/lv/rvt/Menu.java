@@ -152,8 +152,8 @@ public class Menu {
         System.out.println("1. Guess the hidden 5-letter word");
         System.out.println("2. You have 6 attempts");
         System.out.println("3. After each guess, you get feedback:");
-        System.out.println("   🟢 - Correct letter in correct position");
-        System.out.println("   🟡 - Correct letter in wrong position");
-        System.out.println("   ⚪ - Letter not in the word");
+        System.out.println("   Green color - Correct letter in correct position");
+        System.out.println("   Yellow color - Correct letter in wrong position");
+        System.out.println("   Gray color - Letter not in the word");
     }
 }
